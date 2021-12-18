@@ -1,7 +1,8 @@
-import { ADD_GOAL, DELETE_GOAL, MARK_GOAL } from "./constants";
+import { ADD_GOAL, DELETE_GOAL, MARK_GOAL, TOGGLE_SHOW_COMPLETED } from "./constants";
 
 const initialState = {
   goalList: [],
+  showCompleted: true
 };
 
 const random = (min = 0, max = 100) =>
@@ -36,6 +37,12 @@ const goalReducer = (state = initialState, action) => {
         ...state,
         goalList: _goalList,
       };
+    
+    case TOGGLE_SHOW_COMPLETED:
+      return {
+        ...state,
+        showCompleted: !state.showCompleted
+      }
 
     default:
       return state;

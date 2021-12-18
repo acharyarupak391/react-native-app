@@ -1,4 +1,4 @@
-import { ADD_GOAL, DELETE_GOAL, MARK_GOAL } from "./constants";
+import { ADD_GOAL, DELETE_GOAL, MARK_GOAL, TOGGLE_SHOW_COMPLETED } from "./constants";
 
 export function addGoal(goalText) {
   return {
@@ -18,5 +18,11 @@ export function markGoalAsDone(goalId) {
   return {
     type: MARK_GOAL,
     payload: goalId,
+  };
+}
+
+export function toggleShowCompleted() {
+  return {
+    type: TOGGLE_SHOW_COMPLETED,
   };
 }

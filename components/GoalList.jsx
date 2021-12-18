@@ -1,5 +1,8 @@
 import React from "react";
-import { Text, StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View, Switch } from "react-native";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { toggleShowCompleted } from "../redux/actions";
 import GoalItem from "./GoalItem";
 
 const styles = StyleSheet.create({
@@ -22,12 +25,38 @@ const styles = StyleSheet.create({
 });
 
 export default function ({ goals }) {
+  const dispatch = useDispatch();
+
+  const showCompleted = useSelector((state) => state.goal)?.showCompleted;
+
+  const handleSwitchChange = () => dispatch(toggleShowCompleted());
+
+  const goalsToShow = !showCompleted
+    ? goals.filter((el) => !el?.completed)
+    : goals;
   return (
     <View style={styles.container}>
       {goals?.length > 0 ? (
-        goals.map(({text, completed, id}, i) => (
-          <GoalItem key={i} goal={text} completed={completed} id={id} />
-        ))
+        <>
+          {goalsToShow.map(({ text, completed, id }, i) => (
+            <GoalItem key={i} goal={text} completed={completed} id={id} />
+          ))}
+          <View
+            style={{
+              marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "flex-start",
+            }}
+          >
+            <Text style={{ fontSize: 16 }}>Show completed goals</Text>
+            <Switch
+              value={showCompleted}
+              onChange={handleSwitchChange}
+              style={{ transform: [{ scale: 1.15 }] }}
+            />
+          </View>
+        </>
       ) : (
         <Text style={styles.noGoals}>No Goals to show!</Text>
       )}
