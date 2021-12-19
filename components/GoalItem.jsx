@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
   view: {
     padding: 10,
     borderRadius: 4,
-    marginTop: 10,
   },
   mainText: {
     fontFamily: "Nunito_400Regular",

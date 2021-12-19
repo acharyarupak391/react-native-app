@@ -20,9 +20,10 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: "5%",
     paddingVertical: "15%",
+    paddingBottom: "25%",
     margin: 0,
     height: "100%",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     flexDirection: "column",
   },
 });

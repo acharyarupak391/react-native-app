@@ -6,6 +6,7 @@ import {
   Switch,
   TouchableOpacity,
   Animated,
+  ScrollView,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -15,7 +16,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
     height: 600,
     borderRadius: 8,
     justifyContent: "space-between",
@@ -23,6 +23,9 @@ const styles = StyleSheet.create({
     // paddingTop: 25,
     // elevation: 4,
     // shadowColor: "#aaaaaaaa",
+    // borderWidth: 1,
+    flexGrow: 1,
+    marginTop: 20,
   },
   noGoals: {
     fontFamily: "Nunito_300Light",
@@ -31,6 +34,11 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     textAlign: "center",
   },
+});
+
+const border = (color) => ({
+  borderWidth: 1,
+  borderColor: color ?? "black",
 });
 
 export default function ({ goals }) {
@@ -67,22 +75,26 @@ export default function ({ goals }) {
     <View style={styles.container}>
       {goals?.length > 0 ? (
         <>
-          <View>
-            {goalsToShow.map(({ text, completed, id }, i) => (
-              <Animated.View
-                key={i}
-                style={{
-                  transform: [{ translateX: transformValues[i] }],
-                  opacity: transformValues[i].interpolate({
-                    inputRange: [0, 100],
-                    outputRange: [1, 0],
-                  }),
-                }}
-              >
-                <GoalItem goal={text} completed={completed} id={id} />
-              </Animated.View>
-            ))}
-            {goalsToShow?.length === 0 && (
+          <View style={{ flexGrow: 1 }}>
+            {goalsToShow?.length > 0 ? (
+              <ScrollView style={{ maxHeight: "100%" }}>
+                {goalsToShow.map(({ text, completed, id }, i) => (
+                  <Animated.View
+                    key={i}
+                    style={{
+                      marginTop: i > 0 ? 10 : 0,
+                      transform: [{ translateX: transformValues[i] }],
+                      opacity: transformValues[i].interpolate({
+                        inputRange: [0, 100],
+                        outputRange: [1, 0],
+                      }),
+                    }}
+                  >
+                    <GoalItem goal={text} completed={completed} id={id} />
+                  </Animated.View>
+                ))}
+              </ScrollView>
+            ) : (
               <View
                 style={{
                   marginTop: 10,
@@ -100,6 +112,14 @@ export default function ({ goals }) {
                 </Text>
               </View>
             )}
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <View
               style={{
                 marginTop: 10,
@@ -115,12 +135,7 @@ export default function ({ goals }) {
                 style={{ transform: [{ scale: 1.15 }] }}
               />
             </View>
-          </View>
-          <View
-            style={{
-              alignItems: "flex-end",
-            }}
-          >
+
             <TouchableOpacity
               style={{
                 flexDirection: "row",
@@ -134,6 +149,7 @@ export default function ({ goals }) {
                 width: 110,
               }}
               onPress={handleClearALl}
+              activeOpacity={0.65}
             >
               <MaterialIcons name="clear-all" size={20} color={"#990000"} />
               <Text
