@@ -8,6 +8,7 @@ import {
   Animated,
   ScrollView,
   FlatList,
+  SafeAreaView,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -78,7 +79,7 @@ export default function ({ goals }) {
         <>
           <View style={{ flexGrow: 1 }}>
             {goalsToShow?.length > 0 ? (
-              <ScrollView style={{ maxHeight: "100%" }}>
+              <SafeAreaView style={{ maxHeight: "100%" }}>
                 <FlatList
                   data={goalsToShow}
                   renderItem={({ item, index }) => (
@@ -100,7 +101,7 @@ export default function ({ goals }) {
                     </Animated.View>
                   )}
                 />
-              </ScrollView>
+              </SafeAreaView>
             ) : (
               <View
                 style={{
