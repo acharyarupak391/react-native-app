@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import {
   Text,
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Animated,
   ScrollView,
+  FlatList,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -78,21 +79,27 @@ export default function ({ goals }) {
           <View style={{ flexGrow: 1 }}>
             {goalsToShow?.length > 0 ? (
               <ScrollView style={{ maxHeight: "100%" }}>
-                {goalsToShow.map(({ text, completed, id }, i) => (
-                  <Animated.View
-                    key={i}
-                    style={{
-                      marginTop: i > 0 ? 10 : 0,
-                      transform: [{ translateX: transformValues[i] }],
-                      opacity: transformValues[i].interpolate({
-                        inputRange: [0, 100],
-                        outputRange: [1, 0],
-                      }),
-                    }}
-                  >
-                    <GoalItem goal={text} completed={completed} id={id} />
-                  </Animated.View>
-                ))}
+                <FlatList
+                  data={goalsToShow}
+                  renderItem={({ item, index }) => (
+                    <Animated.View
+                      style={{
+                        marginTop: index > 0 ? 10 : 0,
+                        transform: [{ translateX: transformValues[index] }],
+                        opacity: transformValues[index].interpolate({
+                          inputRange: [0, 100],
+                          outputRange: [1, 0],
+                        }),
+                      }}
+                    >
+                      <GoalItem
+                        goal={item.text}
+                        completed={item.completed}
+                        id={item.id}
+                      />
+                    </Animated.View>
+                  )}
+                />
               </ScrollView>
             ) : (
               <View
