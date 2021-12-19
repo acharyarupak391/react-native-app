@@ -87,7 +87,7 @@ export default function GoalItem({ goal, completed, id }) {
           }}
         >
           <LinearGradient
-            colors={["lightblue", "lightgreen"]}
+            colors={["#e6e6fa", "#20b2aa"]}
             start={[0, 1]}
             end={[1, 0]}
             style={styles.view}
@@ -117,11 +117,11 @@ export default function GoalItem({ goal, completed, id }) {
           </LinearGradient>
         </Animated.View>
       ) : (
-        <View style={[styles.view, styles.doneView]}>
+        <Animated.View style={[styles.view, styles.doneView]}>
           <Text
             style={[
               styles.mainText,
-              { textDecorationLine: "line-through", fontSize: 24 },
+              { textDecorationLine: "line-through" },
             ]}
           >
             {goal}
@@ -138,13 +138,14 @@ export default function GoalItem({ goal, completed, id }) {
                   fontSize: 18,
                   color: "#0000007e",
                   fontFamily: "Nunito_400Regular",
+                  paddingVertical: 6
                 }}
               >
                 Done
               </Text>
             </View>
           </View>
-        </View>
+        </Animated.View>
       )}
     </>
   );
