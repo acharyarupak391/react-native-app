@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Animated,
+  Easing,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -62,6 +63,7 @@ export default function GoalItem({ goal, completed, id }) {
     Animated.timing(transformAnim, {
       toValue: 100,
       duration: 200,
+      easing: Easing.exp,
       useNativeDriver: true
     }).start(() => cb());
   }
