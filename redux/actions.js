@@ -1,4 +1,4 @@
-import { ADD_GOAL, CLEAR_ALL_GOALS, DELETE_GOAL, MARK_GOAL, TOGGLE_SHOW_COMPLETED } from "./constants";
+import { ADD_GOAL, CLEAR_ALL_GOALS, CLEAR_COMPLETED_GOALS, DELETE_ALL_GOALS, DELETE_GOAL, MARK_GOAL, TOGGLE_SHOW_COMPLETED } from "./constants";
 
 export function addGoal(goalText) {
   return {
@@ -21,9 +21,15 @@ export function markGoalAsDone(goalId) {
   };
 }
 
-export function clearAllGoals() {
+export function deleteAllGoals() {
   return {
-    type: CLEAR_ALL_GOALS,
+    type: DELETE_ALL_GOALS,
+  };
+}
+
+export function clearCompletedGoals() {
+  return {
+    type: CLEAR_COMPLETED_GOALS,
   };
 }
 

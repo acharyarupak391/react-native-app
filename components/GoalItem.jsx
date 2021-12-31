@@ -61,18 +61,18 @@ export default function GoalItem({ goal, completed, id }) {
   const animateTransform = (cb) => {
     Animated.timing(transformAnim, {
       toValue: 100,
-      duration: 200,
+      duration: 300,
       easing: Easing.exp,
       useNativeDriver: true
     }).start(() => cb());
   }
 
   const handleDelete = () => {
-    animateTransform(() => dispatch(deleteGoal(id)))
+    dispatch(deleteGoal(id))
   };
 
   const handleMark = () => {
-    dispatch(markGoalAsDone(id));
+    animateTransform(() => dispatch(markGoalAsDone(id)));
   };
 
   return (
@@ -131,7 +131,7 @@ export default function GoalItem({ goal, completed, id }) {
             <View style={styles.flex}>
               <AntDesign
                 style={{ fontSize: 20, color: "#0000007e" }}
-                name="check"
+                name="checkcircleo"
               />
               <Text
                 style={{

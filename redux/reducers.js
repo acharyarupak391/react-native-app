@@ -1,8 +1,16 @@
-import { ADD_GOAL, CLEAR_ALL_GOALS, DELETE_GOAL, MARK_GOAL, TOGGLE_SHOW_COMPLETED } from "./constants";
+import {
+  ADD_GOAL,
+  CLEAR_COMPLETED_GOALS,
+  DELETE_ALL_GOALS,
+  DELETE_GOAL,
+  MARK_GOAL,
+  TOGGLE_SHOW_COMPLETED,
+} from "./constants";
 
 const initialState = {
   goalList: [],
-  showCompleted: true
+  completedGoals: [],
+  showCompleted: true,
 };
 
 const random = (min = 0, max = 100) =>
@@ -26,29 +34,34 @@ const goalReducer = (state = initialState, action) => {
       };
 
     case MARK_GOAL:
-      let _goalList = state.goalList.map((el) => {
-        if (el.id === action.payload) {
-          el.completed = true;
-          el.completedAt = new Date().getTime();
-        }
-        return el;
-      });
+      let _completedGoal = state.goalList.find(
+        (el) => el.id === action.payload
+      );
+      let _goalList = state.goalList.filter((el) => el.id !== action.payload);
+      _completedGoal.completedAt = new Date().getTime();
       return {
         ...state,
         goalList: _goalList,
+        completedGoals: [...state.completedGoals, _completedGoal],
       };
 
-    case CLEAR_ALL_GOALS:
+    case DELETE_ALL_GOALS:
       return {
         ...state,
         goalList: [],
       };
-    
+
+    case CLEAR_COMPLETED_GOALS:
+      return {
+        ...state,
+        completedGoals: [],
+      };
+
     case TOGGLE_SHOW_COMPLETED:
       return {
         ...state,
-        showCompleted: !state.showCompleted
-      }
+        showCompleted: !state.showCompleted,
+      };
 
     default:
       return state;

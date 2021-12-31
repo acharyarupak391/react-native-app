@@ -1,54 +1,54 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import MyForm from "./components/Form";
-
 import {
   useFonts,
   Nunito_300Light,
   Nunito_600SemiBold,
-  Nunito_400Regular
+  Nunito_400Regular,
 } from "@expo-google-fonts/nunito";
 import AppLoading from "expo-app-loading";
-import GoalList from "./components/GoalList";
 
-import { Provider, useSelector } from "react-redux";
-import {store, persistor} from "./redux/configureStore";
+import React from "react";
+import { Provider } from "react-redux";
+import { store, persistor } from "./redux/configureStore";
 import { PersistGate } from "redux-persist/integration/react";
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: "5%",
-    paddingVertical: "15%",
-    paddingBottom: "25%",
-    margin: 0,
-    height: "100%",
-    justifyContent: "space-between",
-    flexDirection: "column",
-  },
-});
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { CurrentGoals } from "./screens";
+import CompletedGoals from "./screens/CompletedGoals";
 
 const MyApp = () => {
   let [fontsLoaded] = useFonts({
     Nunito_300Light,
     Nunito_600SemiBold,
-    Nunito_400Regular
+    Nunito_400Regular,
   });
 
-  const states = useSelector(state => state.goal)
+  const GoalStack = createStackNavigator();
 
   if (fontsLoaded) {
     return (
-      <>
-        <StatusBar backgroundColor="" style="dark" hidden={false} />
-        <View style={styles.container}>
-          <MyForm />
-          <GoalList goals={states.goalList} />
-        </View>
-      </>
+      <NavigationContainer>
+        <GoalStack.Navigator>
+          <GoalStack.Screen
+            name="currentGoals"
+            component={CurrentGoals}
+            options={{
+              title: "Your Goals",
+              headerTitle: "Hello"
+            }}
+          />
+          <GoalStack.Screen
+            name="completedGoals"
+            component={CompletedGoals}
+            options={{
+              title: "Completed Goals",
+            }}
+          />
+        </GoalStack.Navigator>
+      </NavigationContainer>
     );
   } else return <AppLoading />;
-}
+};
 
 export default function App() {
   return (

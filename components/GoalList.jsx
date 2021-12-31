@@ -12,20 +12,17 @@ import {
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { clearAllGoals, toggleShowCompleted } from "../redux/actions";
+import { clearCompletedGoals, deleteAllGoals } from "../redux/actions";
 import GoalItem from "./GoalItem";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { color } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
 
 const styles = StyleSheet.create({
   container: {
-    height: 600,
+    // minHeight: 500,
     borderRadius: 8,
     justifyContent: "space-between",
-    // padding: 15,
-    // paddingTop: 25,
-    // elevation: 4,
-    // shadowColor: "#aaaaaaaa",
-    // borderWidth: 1,
+    flexShrink: 1,
     flexGrow: 1,
     marginTop: 20,
   },
@@ -43,16 +40,10 @@ const border = (color) => ({
   borderColor: color ?? "black",
 });
 
-export default function ({ goals }) {
+export default function ({ goals, completedList }) {
   const dispatch = useDispatch();
 
-  const showCompleted = useSelector((state) => state.goal)?.showCompleted;
-
-  const goalsToShow = !showCompleted
-    ? goals.filter((el) => !el?.completed)
-    : goals;
-
-  const transformValues = goalsToShow.map(() => new Animated.Value(0));
+  const transformValues = goals.map(() => new Animated.Value(0));
 
   const startClearAnimation = (cb) => {
     Animated.stagger(
@@ -67,114 +58,84 @@ export default function ({ goals }) {
     ).start(() => cb?.());
   };
 
-  const handleSwitchChange = () => dispatch(toggleShowCompleted());
-
   const handleClearALl = () => {
-    startClearAnimation(() => dispatch(clearAllGoals()));
+    if (!completedList) startClearAnimation(() => dispatch(deleteAllGoals()));
+    else startClearAnimation(() => dispatch(clearCompletedGoals()));
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       {goals?.length > 0 ? (
         <>
-          <View style={{ flexGrow: 1 }}>
-            {goalsToShow?.length > 0 ? (
-              <SafeAreaView style={{ maxHeight: "100%" }}>
-                <FlatList
-                  data={goalsToShow}
-                  renderItem={({ item, index }) => (
-                    <Animated.View
-                      style={{
-                        marginTop: index > 0 ? 10 : 0,
-                        transform: [{ translateX: transformValues[index] }],
-                        opacity: transformValues[index].interpolate({
-                          inputRange: [0, 100],
-                          outputRange: [1, 0],
-                        }),
-                      }}
-                    >
-                      <GoalItem
-                        goal={item.text}
-                        completed={item.completed}
-                        id={item.id}
-                      />
-                    </Animated.View>
-                  )}
-                />
-              </SafeAreaView>
-            ) : (
-              <View
-                style={{
-                  marginTop: 10,
-                }}
-              >
-                <Text
+          <SafeAreaView style={{ flexGrow: 1, flexShrink: 1}}>
+            <FlatList
+              data={goals}
+              renderItem={({ item, index }) => (
+                <Animated.View
                   style={{
-                    fontFamily: "Nunito_300Light",
-                    fontStyle: "italic",
-                    color: "#aaaaaa",
-                    textAlign: "center",
+                    marginTop: index > 0 ? 10 : 0,
+                    transform: [{ translateX: transformValues[index] }],
+                    opacity: transformValues[index].interpolate({
+                      inputRange: [0, 100],
+                      outputRange: [1, 0],
+                    }),
                   }}
                 >
-                  All goals completed!!!
-                </Text>
-              </View>
-            )}
-          </View>
-          <View
+                  <GoalItem
+                    goal={item.text}
+                    id={item.id}
+                    completed={item.completedAt}
+                  />
+                </Animated.View>
+              )}
+            />
+          </SafeAreaView>
+
+          <TouchableOpacity
             style={{
+              marginLeft: "auto",
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
+              padding: 8,
+              paddingRight: 10,
+              borderWidth: 1,
+              borderRadius: 4,
+              borderColor: "#990000",
+              marginTop: 10
             }}
+            onPress={handleClearALl}
+            activeOpacity={0.65}
           >
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "flex-start",
-              }}
-            >
-              <Text style={{ fontSize: 16 }}>Show completed goals</Text>
-              <Switch
-                value={showCompleted}
-                onChange={handleSwitchChange}
-                style={{ transform: [{ scale: 1.15 }] }}
+            {!completedList ? (
+              <MaterialCommunityIcons
+                name="delete-forever-outline"
+                size={24}
+                color={"#990000"}
               />
-            </View>
+            ) : (
+              <MaterialIcons name="remove-done" size={24} color={"#990000"} />
+            )}
 
-            <TouchableOpacity
+            <Text
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 8,
-                paddingRight: 10,
-                borderWidth: 1,
-                borderRadius: 4,
-                borderColor: "#990000",
-                width: 110,
+                color: "#990000",
+                fontSize: 20,
+                fontFamily: "Nunito_400Regular",
+                marginLeft: 5,
               }}
-              onPress={handleClearALl}
-              activeOpacity={0.65}
             >
-              <MaterialIcons name="clear-all" size={20} color={"#990000"} />
-              <Text
-                style={{
-                  color: "#990000",
-                  fontSize: 18,
-                  fontFamily: "Nunito_400Regular",
-                  marginLeft: 5,
-                }}
-              >
-                Clear All
-              </Text>
-            </TouchableOpacity>
-          </View>
+              {!completedList ? "Delete all" : "Clear All"}
+            </Text>
+          </TouchableOpacity>
         </>
       ) : (
-        <Text style={styles.noGoals}>No Goals to show!</Text>
+        <View>
+          <Text style={styles.noGoals}>
+            {completedList ? "No Goals completed yet" : "No Goals to show!"}
+          </Text>
+          {!completedList && <Text style={styles.noGoals}>Start Now!</Text>}
+        </View>
       )}
     </View>
   );
